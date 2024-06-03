@@ -20,7 +20,7 @@ export async function uploadScreenShot(req: RequestInterface, res: Response) {
     if (!response.status) {
       return res.status(500).json({ message: "Error uploading file" });
     }
-    let url = response.data.Location;
+    let url = `https://${process.env.BUCKET_NAME}.s3.amazonaws.com/${fileName}`;
     await prisma.screenShot.create({
       data: {
         url: url,
