@@ -1,6 +1,9 @@
 import { Request, Response } from "express";
 import { PrismaClient } from "@prisma/client";
-import { createUserValidation } from "../validation/user";
+import {
+  createUserValidation,
+  validateUserValidation,
+} from "../validation/user";
 
 const prisma = new PrismaClient();
 
@@ -8,7 +11,7 @@ export async function createUser(req: Request, res: Response) {
   const { email }: { email: string } = req.body;
   const validationRes = await createUserValidation(email);
   if (validationRes) {
-    return res.status(400).json({ message: "User already exist" });
+    return res.status(400).json({ message: validationRes });
   }
   const user = await prisma.user.create({
     data: {
@@ -26,6 +29,10 @@ export async function createUser(req: Request, res: Response) {
 
 export async function validateCode(req: Request, res: Response) {
   const { code }: { code: string } = req.body;
+  const validationRes = await validateUserValidation(code);
+  if (validationRes) {
+    return res.status(400).json({ message: validationRes });
+  }
   const user = await prisma.user.findUnique({
     where: {
       id: code,
