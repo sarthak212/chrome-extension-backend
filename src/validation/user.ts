@@ -1,8 +1,5 @@
-import { PrismaClient } from "@prisma/client";
 import { requiredFieldValidation } from ".";
 import { User } from "../../schema/user";
-
-const prisma = new PrismaClient();
 
 export async function createUserValidation(email: string) {
   const response = requiredFieldValidation(["email"], { email });
