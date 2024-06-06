@@ -1,7 +1,6 @@
-import { PrismaClient } from "@prisma/client";
 import { NextFunction, Request, Response } from "express";
 import { RequestInterface } from "./interface";
-const prisma = new PrismaClient();
+import { User } from "../schema/user";
 
 export const checkUserCode = async (
   req: RequestInterface,
@@ -14,7 +13,8 @@ export const checkUserCode = async (
       return res.status(401).json({ message: "Unauthorized" });
     }
     const code = token.split(" ")[1];
-    const user = await prisma.user.findUnique({ where: { id: code } });
+    const user = await User.findOne({ _id: code });
+    const allUsr = await User.find();
     if (!user) {
       return res.status(401).json({ message: "Unauthorized" });
     }

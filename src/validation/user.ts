@@ -1,5 +1,6 @@
 import { PrismaClient } from "@prisma/client";
 import { requiredFieldValidation } from ".";
+import { User } from "../../schema/user";
 
 const prisma = new PrismaClient();
 
@@ -8,10 +9,8 @@ export async function createUserValidation(email: string) {
   if (response) {
     return response;
   }
-  const alreadyExist = await prisma.user.findUnique({
-    where: {
-      email,
-    },
+  const alreadyExist = await User.findOne({
+    email,
   });
   if (alreadyExist) {
     return `User with email ${email} already exist`;
