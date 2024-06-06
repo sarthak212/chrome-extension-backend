@@ -14,7 +14,7 @@ const PORT: number = parseInt(process.env.PORT as string, 10) || 4000;
   app.use("/user", userRouter);
   app.use(checkUserCode);
   app.use("/slot", slotRouter);
-
+  // listen port
   app.listen(PORT, () => {
     console.log(`Server is running on PORT: ${PORT}`);
   });
