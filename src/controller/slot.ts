@@ -1,9 +1,9 @@
 import { Request, Response } from "express";
 import { RequestInterface } from "../interface";
 import { uploadToS3 } from "../helpers/aws";
-import { Screenshot } from "../../schema/screenshot";
-import { User } from "../../schema/user";
-import { Logs } from "../../schema/logs";
+import { Screenshot } from "../schema/screenshot";
+import { User } from "../schema/user";
+import { Logs } from "../schema/logs";
 
 export async function uploadScreenShot(req: RequestInterface, res: Response) {
   try {

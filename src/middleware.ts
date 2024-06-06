@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import { RequestInterface } from "./interface";
-import { User } from "../schema/user";
+import { User } from "./schema/user";
 
 export const checkUserCode = async (
   req: RequestInterface,

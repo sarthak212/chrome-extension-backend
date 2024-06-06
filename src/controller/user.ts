@@ -3,7 +3,7 @@ import {
   createUserValidation,
   validateUserValidation,
 } from "../validation/user";
-import { User } from "../../schema/user";
+import { User } from "../schema/user";
 
 export async function createUser(req: Request, res: Response) {
   const { email }: { email: string } = req.body;

@@ -1,5 +1,5 @@
 import { requiredFieldValidation } from ".";
-import { User } from "../../schema/user";
+import { User } from "../schema/user";
 
 export async function createUserValidation(email: string) {
   const response = requiredFieldValidation(["email"], { email });
