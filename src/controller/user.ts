@@ -20,7 +20,13 @@ export async function createUser(req: Request, res: Response) {
   });
 
   // Send Email to user with Code
-  return res.status(200).json({ message: "User created", code: user.id });
+  return res
+    .status(200)
+    .json({
+      message:
+        "Code is sent to your email. Please add that code in below input to verify!",
+      code: user.id,
+    });
 }
 
 export async function validateCode(req: Request, res: Response) {
@@ -33,7 +39,9 @@ export async function validateCode(req: Request, res: Response) {
     _id: code,
   });
   if (!user) {
-    return res.status(400).json({ message: "Invalid Code" });
+    return res
+      .status(400)
+      .json({ message: "Invalid Code, Please Enter a valid Code!" });
   }
   return res.status(200).json({ message: "Valid Code" });
 }
