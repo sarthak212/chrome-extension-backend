@@ -4,6 +4,7 @@ import {
   validateUserValidation,
 } from "../validation/user";
 import { User } from "../schema/user";
+import { sendToken } from "../helpers/mailer";
 
 export async function createUser(req: Request, res: Response) {
   const { email }: { email: string } = req.body;
@@ -20,13 +21,17 @@ export async function createUser(req: Request, res: Response) {
   });
 
   // Send Email to user with Code
-  return res
-    .status(200)
-    .json({
-      message:
-        "Code is sent to your email. Please add that code in below input to verify!",
-      code: user.id,
-    });
+
+  await sendToken({
+    to: email,
+    subject: "Access Code for Verification | Stamped",
+    token: user.id,
+  });
+  return res.status(200).json({
+    message:
+      "Code is sent to your email. Please add that code in below input to verify!",
+    code: user.id,
+  });
 }
 
 export async function validateCode(req: Request, res: Response) {

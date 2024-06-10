@@ -4,6 +4,7 @@ import { uploadToS3 } from "../helpers/aws";
 import { Screenshot } from "../schema/screenshot";
 import { User } from "../schema/user";
 import { Logs } from "../schema/logs";
+import { notifyAllUsers } from "../helpers/mailer";
 
 export async function uploadScreenShot(req: RequestInterface, res: Response) {
   try {
@@ -71,6 +72,13 @@ export async function updateSlotAvailability(
       { upsert: true }
     );
     // notify User
+    const log = await Logs.findOne({ location: location });
+    if (log && log.location && log.start_date && log.dates.length > 0)
+      notifyAllUsers({
+        location: log.location,
+        date: log.start_date.toISOString(),
+        slot: log.dates.length + "",
+      });
     return res.status(200).json({ message: "Logs updated successfully" });
   } catch (error: any) {
     return res.status(500).json({ message: error.message });
