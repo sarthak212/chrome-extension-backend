@@ -1,4 +1,6 @@
 import AWS from "aws-sdk";
+require("dotenv").config();
+
 AWS.config.update({
   accessKeyId: process.env.AWS_ACCESS_KEY_ID,
   secretAccessKey: process.env.secretAccessKey,
@@ -24,6 +26,7 @@ export async function uploadToS3({
       ContentEncoding: "base64",
       ContentType: "image/jpeg",
     };
+
     s3.putObject(params, function (err, data) {
       if (err) {
         console.log(err);
