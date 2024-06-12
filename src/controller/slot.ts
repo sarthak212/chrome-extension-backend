@@ -56,8 +56,10 @@ export async function updateSlotAvailability(
         .status(400)
         .json({ message: "Date and location details are required" });
     }
-    if (!Array.isArray(dates)) {
-      return res.status(400).json({ message: "Dates should be an array" });
+    if (!Array.isArray(dates) || dates.length == 0) {
+      return res
+        .status(400)
+        .json({ message: "Dates should be an array with at least one value!" });
     }
     const updatedDate = dates.map((date: any) => new Date(date));
     let lowestData = updatedDate.sort((a, b) => a.getTime() - b.getTime())[0];

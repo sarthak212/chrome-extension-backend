@@ -1,20 +1,29 @@
 import mongoose, { Schema } from "mongoose";
 import { nanoid } from "nanoid";
 
-const logsSchema = new Schema({
-  _id: {
-    type: String,
-    default: () => nanoid(10),
+const logsSchema = new Schema(
+  {
+    _id: {
+      type: String,
+      default: () => nanoid(10),
+    },
+    location: {
+      type: "String",
+    },
+    dates: {
+      type: [Date],
+    },
+    start_date: {
+      type: Date,
+    },
+    created_at: {
+      type: Date,
+    },
+    updated_at: {
+      type: Date,
+    },
   },
-  location: {
-    type: "String",
-  },
-  dates: {
-    type: [Date],
-  },
-  start_date: {
-    type: Date,
-  },
-});
+  { timestamps: { createdAt: "created_at", updatedAt: "updated_at" } }
+);
 
 export const Logs = mongoose.model("logs", logsSchema);
