@@ -11,7 +11,7 @@ const logsSchema = new Schema(
       type: "String",
     },
     dates: {
-      type: [Date],
+      type: Schema.Types.Mixed,
     },
     start_date: {
       type: Date,

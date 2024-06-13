@@ -78,11 +78,7 @@ const tokenTemplate = (data: { name: string; token: string }) => {
 `;
 };
 
-const notifyTemplate = (data: {
-  date: string;
-  location: string;
-  slot: string;
-}) => {
+const notifyTemplate = (data: { date: string; location: string }) => {
   return `<!DOCTYPE html>
 <html lang="en">
   <head>
@@ -148,9 +144,8 @@ const notifyTemplate = (data: {
           are the details:
         </p>
         <div class="details">
-          <p><strong>Date:</strong> ${data.date}</p>
+          <p><strong>Dates:</strong> ${data.date}</p>
           <p><strong>Location:</strong> ${data.location}</p>
-          <p><strong>Available Slots:</strong> ${data.slot}</p>
         </div>
         <p>
           Please log in to your visa account to book your slot as soon as
@@ -218,13 +213,11 @@ export function notifyUserEmail({
   subject,
   date,
   location,
-  slot,
 }: {
   to: string;
   subject: string;
   date: string;
   location: string;
-  slot: string;
 }): Promise<{ status: boolean; data?: any; error?: any }> {
   return new Promise((resolve, _reject) => {
     const raw = JSON.stringify({
@@ -241,7 +234,6 @@ export function notifyUserEmail({
       html_part: notifyTemplate({
         date: new Date(date).toDateString(),
         location: location,
-        slot: slot,
       }),
     });
 
@@ -269,11 +261,9 @@ export function notifyUserEmail({
 export const notifyAllUsers = async ({
   date,
   location,
-  slot,
 }: {
   date: string;
   location: string;
-  slot: string;
 }) => {
   const allUser = await User.find({});
   allUser.forEach((user) => {
@@ -283,7 +273,6 @@ export const notifyAllUsers = async ({
         subject: "Visa Slot Available | Stamped",
         date: date,
         location: location,
-        slot: slot,
       });
     }
   });

@@ -6,6 +6,21 @@ import { User } from "../schema/user";
 import { Logs } from "../schema/logs";
 import { notifyAllUsers } from "../helpers/mailer";
 
+const monthsName = [
+  "Jan",
+  "Feb",
+  "Mar",
+  "Apr",
+  "May",
+  "Jun",
+  "Jul",
+  "Aug",
+  "Sep",
+  "Oct",
+  "Nov",
+  "Dec",
+];
+
 export async function uploadScreenShot(req: RequestInterface, res: Response) {
   try {
     const { file } = req.body;
@@ -61,15 +76,45 @@ export async function updateSlotAvailability(
         .status(400)
         .json({ message: "Dates should be an array with at least one value!" });
     }
-    const updatedDate = dates.map((date: any) => new Date(date));
-    let lowestData = updatedDate.sort((a, b) => a.getTime() - b.getTime())[0];
+    const updateObject: any = {};
+    const foundCondition: any = {};
+    const availableDates: any[] = [];
+    for (let i = 0; i < dates.length; i++) {
+      if (updateObject[`dates.${dates[i].year}.${dates[i].month}`]) {
+        updateObject[`dates.${dates[i].year}.${dates[i].month}`].push(
+          dates[i].date
+        );
+        foundCondition[`dates.${dates[i].year}.${dates[i].month}`]["$all"].push(
+          dates[i].date
+        );
+      } else {
+        updateObject[`dates.${dates[i].year}.${dates[i].month}`] = [
+          dates[i].date,
+        ];
+        foundCondition[`dates.${dates[i].year}.${dates[i].month}`] = {
+          $all: [dates[i].date],
+        };
+      }
+
+      // dates to be notified
+      const newMonthYear = `${monthsName[dates[i].month]}-${dates[i].year}`;
+      if (!availableDates.includes(newMonthYear)) {
+        availableDates.push(newMonthYear);
+      }
+    }
+    const docs = await Logs.findOne({
+      location: location,
+      ...foundCondition,
+    });
+    if (docs) {
+      return res.status(400).json({ message: "Slot already exists" });
+    }
     await Logs.updateOne(
       {
         location: location,
       },
       {
-        $addToSet: { dates: { $each: updatedDate } },
-        $min: { start_date: lowestData },
+        $set: updateObject,
       },
       { upsert: true }
     );
@@ -78,8 +123,7 @@ export async function updateSlotAvailability(
     if (log && log.location && log.start_date && log.dates.length > 0)
       notifyAllUsers({
         location: log.location,
-        date: log.start_date.toISOString(),
-        slot: log.dates.length + "",
+        date: availableDates.join(", "),
       });
     return res.status(200).json({ message: "Logs updated successfully" });
   } catch (error: any) {
