@@ -107,6 +107,15 @@ export async function updateSlotAvailability(
       ...foundCondition,
     });
     if (docs) {
+      await Logs.updateOne(
+        {
+          location: location,
+        },
+        {
+          $set: updateObject,
+        },
+        { upsert: true }
+      );
       return res.status(400).json({ message: "Slot already exists" });
     }
     await Logs.updateOne(
