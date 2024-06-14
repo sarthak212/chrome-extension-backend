@@ -223,7 +223,7 @@ export function notifyUserEmail({
     const raw = JSON.stringify({
       from: {
         email: "visa@stamped.one",
-        name: "Tanish",
+        name: "Stamped",
       },
       to: [
         {
