@@ -232,7 +232,7 @@ export function notifyUserEmail({
       ],
       subject: subject,
       html_part: notifyTemplate({
-        date: new Date(date).toDateString(),
+        date: date,
         location: location,
       }),
     });
