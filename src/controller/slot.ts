@@ -61,7 +61,9 @@ export async function updateSlotAvailability(
   res: Response
 ) {
   try {
-    const { location, dates }: { location: string; dates: any } = req.body;
+    console.log("req body ", req.body);
+    const { location, dates }: any = req.body;
+
     const user = req.user;
     if (!user) {
       return res.status(401).json({ message: "Unauthorized" });
@@ -129,7 +131,7 @@ export async function updateSlotAvailability(
     );
     // notify User
     const log = await Logs.findOne({ location: location });
-    if (log && log.location && log.start_date && log.dates.length > 0)
+    if (log && log.location)
       notifyAllUsers({
         location: log.location,
         date: availableDates.join(", "),
