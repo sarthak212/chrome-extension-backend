@@ -5,6 +5,7 @@ import { Screenshot } from "../schema/screenshot";
 import { User } from "../schema/user";
 import { Logs } from "../schema/logs";
 import { notifyAllUsers } from "../helpers/mailer";
+import { validateSlotUpdate } from "../validation/slot";
 
 const monthsName = [
   "Jan",
@@ -63,7 +64,10 @@ export async function updateSlotAvailability(
   try {
     console.log("req body ", req.body);
     const { location, dates }: any = req.body;
-
+    const validateResponse = validateSlotUpdate(dates);
+    if (!validateResponse.status) {
+      return res.status(400).json({ message: validateResponse.message });
+    }
     const user = req.user;
     if (!user) {
       return res.status(401).json({ message: "Unauthorized" });
