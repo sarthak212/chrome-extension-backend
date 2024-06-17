@@ -6,6 +6,7 @@ import { User } from "../schema/user";
 import { Logs } from "../schema/logs";
 import { notifyAllUsers } from "../helpers/mailer";
 import { validateSlotUpdate } from "../validation/slot";
+import queue from "../helpers/queue";
 
 const monthsName = [
   "Jan",
@@ -112,34 +113,17 @@ export async function updateSlotAvailability(
       location: location,
       ...foundCondition,
     });
+    const job = queue.createJob({
+      location,
+      availableDates,
+      updateObject,
+      foundCondition,
+    });
+    job.save();
     if (docs) {
-      await Logs.updateOne(
-        {
-          location: location,
-        },
-        {
-          $set: updateObject,
-        },
-        { upsert: true }
-      );
       return res.status(400).json({ message: "Slot already exists" });
     }
-    await Logs.updateOne(
-      {
-        location: location,
-      },
-      {
-        $set: updateObject,
-      },
-      { upsert: true }
-    );
-    // notify User
-    const log = await Logs.findOne({ location: location });
-    if (log && log.location)
-      notifyAllUsers({
-        location: log.location,
-        date: availableDates.join(", "),
-      });
+
     return res.status(200).json({ message: "Logs updated successfully" });
   } catch (error: any) {
     return res.status(500).json({ message: error.message });

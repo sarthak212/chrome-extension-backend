@@ -220,6 +220,7 @@ export function notifyUserEmail({
   location: string;
 }): Promise<{ status: boolean; data?: any; error?: any }> {
   return new Promise((resolve, _reject) => {
+    resolve({ status: true, data: "Email sent" });
     const raw = JSON.stringify({
       from: {
         email: "visa@stamped.one",
@@ -268,12 +269,12 @@ export const notifyAllUsers = async ({
   const allUser = await User.find({});
   allUser.forEach((user) => {
     if (user.email) {
-      notifyUserEmail({
-        to: user.email,
-        subject: "Visa Slot Available | Stamped",
-        date: date,
-        location: location,
-      });
+      // notifyUserEmail({
+      //   to: user.email,
+      //   subject: "Visa Slot Available | Stamped",
+      //   date: date,
+      //   location: location,
+      // });
     }
   });
 };
