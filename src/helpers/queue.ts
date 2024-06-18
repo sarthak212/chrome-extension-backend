@@ -32,7 +32,11 @@ queue.process(async (job: any, done: any): Promise<any> => {
   );
   const log = await Logs.findOne({ location: data.location });
   if (log && log.location) {
-    console.log("update successful for location ", log.location);
+    console.log(
+      "update successful for location ",
+      log.location,
+      data.availableDates.join(", ")
+    );
     notifyAllUsers({
       location: log.location,
       date: data.availableDates.join(", "),

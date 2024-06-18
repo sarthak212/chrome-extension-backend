@@ -269,12 +269,12 @@ export const notifyAllUsers = async ({
   const allUser = await User.find({});
   allUser.forEach((user) => {
     if (user.email) {
-      // notifyUserEmail({
-      //   to: user.email,
-      //   subject: "Visa Slot Available | Stamped",
-      //   date: date,
-      //   location: location,
-      // });
+      notifyUserEmail({
+        to: user.email,
+        subject: "Visa Slot Available | Stamped",
+        date: date,
+        location: location,
+      });
     }
   });
 };
