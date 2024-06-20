@@ -21,6 +21,9 @@ const userSchema = new Schema({
   extension_used_count: {
     type: Number,
   },
+  created_at: {
+    type: Date,
+  },
 });
 
 export const User = mongoose.model("users", userSchema);

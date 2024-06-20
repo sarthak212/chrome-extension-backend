@@ -28,6 +28,7 @@ export async function createUser(req: Request, res: Response) {
     contribution_count: 0,
     web_used_count: 0,
     extension_used_count: 0,
+    created_at: new Date(),
   });
 
   // Send Email to user with Code
