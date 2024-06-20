@@ -13,13 +13,6 @@ const PORT: number = parseInt(process.env.PORT as string, 10) || 4000;
   app.use(express.json({ limit: "50mb" }));
   app.use(express.urlencoded({ extended: true, limit: "50mb" }));
   app.use(cors());
-  const userLimiter = rateLimit({
-    windowMs: 15 * 60 * 1000, // 15 minutes
-    limit: 3, // Limit each IP to 5 requests per `window` (here, per 15 minutes).
-    standardHeaders: "draft-7", // draft-6: `RateLimit-*` headers; draft-7: combined `RateLimit` header
-    legacyHeaders: false, // Disable the `X-RateLimit-*` headers.
-    // store: ... , // Redis, Memcached, etc. See below.
-  });
 
   const generalRateLimit = rateLimit({
     windowMs: 15 * 60 * 1000, // 15 minutes
@@ -32,7 +25,7 @@ const PORT: number = parseInt(process.env.PORT as string, 10) || 4000;
   // Apply the rate limiting middleware to all requests.
   app.use(generalRateLimit);
   await mongoose.connect(process.env.DATABASE_URL!);
-  app.use("/user", userLimiter, userRouter);
+  app.use("/user", userRouter);
   app.use(checkUserCode);
   app.use("/slot", slotRouter);
   // listen port
