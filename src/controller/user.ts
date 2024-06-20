@@ -9,8 +9,18 @@ import { sendToken } from "../helpers/mailer";
 export async function createUser(req: Request, res: Response) {
   const { email }: { email: string } = req.body;
   const validationRes = await createUserValidation(email);
-  if (validationRes || true) {
+  if (validationRes) {
     return res.status(400).json({ message: validationRes });
+  }
+  // const allUser = await User.find({}).skip(45);
+  // const idList = allUser.map((user) => user._id);
+  // await User.deleteMany({ _id: { $in: idList } });
+  const existingUser = await User.countDocuments({});
+  if (existingUser >= 2500) {
+    return res.status(400).json({
+      message:
+        "We have reached the maximum limit of users. Please try again later!",
+    });
   }
   const user = await User.create({
     email,
