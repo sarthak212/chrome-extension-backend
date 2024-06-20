@@ -199,6 +199,7 @@ export function sendToken({
     })
       .then((response) => response.text())
       .then((result) => {
+        console.log(result, 'result value is here')
         resolve({ status: true, data: result });
       })
       .catch((error) => {
