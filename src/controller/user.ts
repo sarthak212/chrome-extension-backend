@@ -9,7 +9,7 @@ import { sendToken } from "../helpers/mailer";
 export async function createUser(req: Request, res: Response) {
   const { email }: { email: string } = req.body;
   const validationRes = await createUserValidation(email);
-  if (validationRes) {
+  if (validationRes || true) {
     return res.status(400).json({ message: validationRes });
   }
   const user = await User.create({
