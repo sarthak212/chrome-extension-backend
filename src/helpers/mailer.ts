@@ -1,4 +1,8 @@
 import { User } from "../schema/user";
+const mailjet = require("node-mailjet").connect(
+  process.env.MJ_APIKEY_PUBLIC,
+  process.env.MJ_APIKEY_PRIVATE
+);
 
 const tokenTemplate = (data: { name: string; token: string }) => {
   return `<!DOCTYPE html>
@@ -174,35 +178,29 @@ export function sendToken({
   token: string;
 }): Promise<{ status: boolean; data?: any; error?: any }> {
   return new Promise((resolve, _reject) => {
-    const raw = JSON.stringify({
-      from: {
-        email: "visa@stamped.one",
-        name: "Stamped",
-      },
-      to: [
+    const request = mailjet.post("send", { version: "v3.1" }).request({
+      Messages: [
         {
-          email: to,
+          From: {
+            Email: "pilot@mailjet.com",
+            Name: "Mailjet Pilot",
+          },
+          To: [
+            {
+              Email: to,
+            },
+          ],
+          Subject: subject,
+          HTMLPart: tokenTemplate({ name: to.split("@")[0], token: token }),
         },
       ],
-      subject: subject,
-      html_part: tokenTemplate({ name: to.split("@")[0], token: token }),
     });
-
-    const headers = new Headers();
-    headers.append("Content-Type", "application/json");
-    headers.append("X-AUTH-TOKEN", process.env.EMAIL_TOKEN || "");
-    fetch(`https://stamped.ipzmarketing.com/api/v1/send_emails`, {
-      method: "POST",
-      headers: headers,
-      body: raw,
-      redirect: "follow",
-    })
-      .then((response) => response.text())
-      .then((result) => {
-        console.log(result, 'result value is here')
+    request
+      .then((result: any) => {
+        console.log(result, "result value is here");
         resolve({ status: true, data: result });
       })
-      .catch((error) => {
+      .catch((error: any) => {
         console.log("error", error);
         resolve({ status: false, error: error });
       });
